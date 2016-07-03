@@ -1,5 +1,5 @@
 {
-  "name": "DrupalHeadless/Database",
+  "name": "drupalheadless/database",
   "description": "A Drupal 7 ORM as headless version",
   "keywords": [
     "drupal",
