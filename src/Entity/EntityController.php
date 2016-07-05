@@ -445,10 +445,10 @@ class EntityController
                 $entity_key = $entity_id;
 
             if ($entity_key[0] === '#')
-                $entity_key = "'" . substr($entity_key, 1) . "'";
+                $entity_key = substr($entity_key, 1);
 
             if ($fieldset_key[0] == '#')
-                $fieldset_key = "'" . substr($fieldset_key, 1) . "'";
+                $fieldset_key = substr($fieldset_key, 1);
 
             $this->st->condition($fieldset_key, $entity_key);
 
