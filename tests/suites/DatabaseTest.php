@@ -42,7 +42,7 @@ class DatabaseTest extends TestCase
 
         Database::addConnectionInfo('default', 'default', array(
             'driver'    => 'mysql',
-            'database'  => 'drupal',
+            'database'  => 'travis_ci_drupal',
             'username'  => 'root',
             'password'  => '',
             'host'      => '127.0.0.1',
