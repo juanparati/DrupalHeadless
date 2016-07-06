@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use phpunit\framework\TestCase;
 use DrupalHeadless\Database\Database;
 
 
