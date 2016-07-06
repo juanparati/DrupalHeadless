@@ -29,6 +29,6 @@ install:
   - composer install
 
 before_script:
-  - mysql -e "source test/sql/test.sql;"
+  - mysql -u root < tests/sql/test.sql
 
 script: phpunit --configuration phpunit_mysql.xml --coverage-text
