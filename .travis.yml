@@ -29,4 +29,4 @@ install:
 before_script:
   - mysql -u root < tests/sql/test.sql
 
-script: phpunit --configuration phpunit_mysql.xml --coverage-text
+script: phpunit --configuration phpunit_mysql.xml
