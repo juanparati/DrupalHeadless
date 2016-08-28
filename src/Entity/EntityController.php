@@ -112,16 +112,13 @@ class EntityController
 
 
     /**
-     * Begin a new query
+     * Load the entity relations
      *
-     * @param mixed $include_fields
+     * @param string|array   $include_fields    Fields to include
      * @return $this
      */
     public function load($include_fields = '*')
     {
-
-        $this->st = $this->db->select($this->entity->info()['table'], 'main');
-        $this->st->fields('main');
 
         $static_relations  = $this->entity->static_relations();
         $dynamic_relations = $this->entity->dynamic_relations();
@@ -171,26 +168,60 @@ class EntityController
                 }
             }
 
-            // Those elements with cardinality are going to be retrieved later as an array
-            /*
-            if ($gfield['cardinality'] != 1)
-                continue;
-            */
-
-            $this->st->leftJoin($gfield['table'], $krelation, $this->_buildJoinLink('main', $krelation, $gfield));
-
-            /*
-            if (!isset($dynamic_field['fields']))
-                echo $kdynamic_field;
-            */
-
-            foreach ($gfield['fields'] as $kfield => $field)
-                $this->st->addField($krelation, $field, $krelation);
-
         }
 
 
         return $this;
+
+    }
+
+
+    /**
+     * Begin a new query
+     *
+     * @return $this
+     */
+    public function select()
+    {
+
+        $this->st = $this->db->select($this->entity->info()['table'], 'main');
+        $this->st->fields('main');
+
+        if (!empty($this->relations))
+        {
+
+            foreach ($this->relations as $krelation => $gfield)
+            {
+
+                $this->st->leftJoin($gfield['table'], $krelation, $this->_buildJoinLink('main', $krelation, $gfield));
+
+                foreach ($gfield['fields'] as $kfield => $field)
+                {
+
+                    // Those elements with cardinality are going to be retrieved later as an array
+                    if ($gfield['cardinality'] != 1)
+                        continue;
+
+                    $this->st->addField($krelation, $field);
+                }
+
+
+            }
+
+        }
+        
+
+        return $this;
+    }
+
+
+    public function insert(array $columns)
+    {
+
+        //$this->st = $this->db->insert($this->entity->info()['table']);
+
+
+
     }
 
 
@@ -259,6 +290,25 @@ class EntityController
             if (isset($this->relations[$fieldset]['fields'][$k]))
                 $field_values[$this->relations[$fieldset]['fields'][$k]] = $value;
         }
+
+
+        // Get last multified ID
+        /*
+        if (isset($this->relations[$fieldset]['type']) && $this->relations[$fieldset]['type'] == 'multifield')
+        {
+            $max_id = $this->db->select('variable', 'var')
+                ->addField('var', 'value')
+                ->condition('var.name', 'multifield_max_id')
+                ->execute()
+                ->fetchColumn();
+
+            $max_id = $max_id === false ? 0 : unserialize(max_id);
+
+            $max_id++;
+
+            $field_values[$this->relations[$fieldset]['fields'][$fieldset . '_id']] = $max_id;
+        }
+        */
 
 
         /*
@@ -401,8 +451,15 @@ class EntityController
     {
         $result = $this->st->execute()->fetchAll();
 
+        // Group fields
+        foreach ($result as &$row)
+            $this->_group_result_fields($row);
+
+        // Get multi cardinal fields
         foreach ($result as &$row)
             $this->_query_multifield_record($row);
+
+
 
         return $result;
     }
@@ -460,6 +517,38 @@ class EntityController
 
 
     /**
+     * Group entity results by field
+     *
+     * @param $row
+     */
+    protected function _group_result_fields(&$row)
+    {
+
+        foreach ($this->relations as $kfieldset => $fieldset)
+        {
+
+            // Ignore fields with cardinality
+            if ($fieldset['cardinality'] != 1)
+                continue;
+
+            foreach ($fieldset['fields'] as $kfield => $field)
+            {
+                if (property_exists($row, $field))
+                {
+                    if (!isset($row->{$kfieldset}))
+                        $row->{$kfieldset} = new \stdClass();
+
+                    $row->{$kfieldset}->$kfield = $row->{$field};
+                    unset($row->{$field});
+                }
+
+            }
+
+        }
+    }
+
+
+    /**
      * Retrieve and add an multifield result
      *
      * @param $row
@@ -512,6 +601,7 @@ class EntityController
         $st->addField('fi', 'field_name');
         $st->addField('fc', 'data');
         $st->addField('fc', 'cardinality');
+        $st->addField('fc', 'type');
 
         $fields_ref = $st->execute()->fetchAll();
 
@@ -534,6 +624,7 @@ class EntityController
                 $table = array_keys($schema['storage']['details']['sql']['FIELD_LOAD_CURRENT'])[0];
 
                 $dynamic_relations['children'][$field->field_name]['table'] = $table;
+                $dynamic_relations['children'][$field->field_name]['type']  = $field->type;
 
                 $dynamic_relations['children'][$field->field_name]['cardinality'] = $field->cardinality;
 
@@ -554,6 +645,7 @@ class EntityController
                 $table = array_keys($schema['storage']['details']['sql']['FIELD_LOAD_REVISION'])[0];
 
                 $dynamic_relations['revision'][$field->field_name]['table'] = $table;
+                $dynamic_relations['revision'][$field->field_name]['type']  = $field->type;
 
                 $dynamic_relations['revision'][$field->field_name]['cardinality'] = $field->cardinality;
 
@@ -581,7 +673,7 @@ class EntityController
 
 
     /**
-     * Build left join conditions according
+     * Build left join conditions
      *
      * @param $main_alias
      * @param string $link_alias
