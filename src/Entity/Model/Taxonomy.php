@@ -38,6 +38,7 @@ class Taxonomy implements ModelInterface
             (
                 'table'         => 'taxonomy_term_hierarchy',
                 'cardinality'   => 1,
+                'language'      => false,
                 'keys'          => array
                 (
                     'tid:tid'

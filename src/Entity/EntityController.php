@@ -209,19 +209,21 @@ class EntityController
             }
 
         }
-        
+
 
         return $this;
     }
 
 
+    /**
+     * Insert a new entity element
+     *
+     * @param array $columns
+     * @return \DrupalHeadless\Database\DatabaseStatementInterface|int
+     */
     public function insert(array $columns)
     {
-
-        //$this->st = $this->db->insert($this->entity->info()['table']);
-
-
-
+        return $this->db->insert($this->entity->info()['table'])->fields($columns)->execute();
     }
 
 
@@ -279,7 +281,8 @@ class EntityController
         }
 
 
-        $field_values['language'] = $this->language;
+        if (!isset($this->relations[$fieldset]['language']) || $this->relations[$fieldset]['language'] !== false)
+            $field_values['language'] = $this->language;
 
         if ($delta !== false)
             $field_values['delta'] = $delta;
@@ -334,7 +337,7 @@ class EntityController
 
 
         return $status;
-        
+
 
     }
 
@@ -411,7 +414,7 @@ class EntityController
 
         if ($column_name !== false)
             $this->st->condition($fieldset . '.' . $column_name, $value, $condition);
-        
+
         return $this;
     }
 
@@ -698,7 +701,7 @@ class EntityController
             else
                 $join_link = "$link_alias.$join_link";
 
-            
+
             $condition .= empty($condition) ? '' : ' AND ';
             $condition .= "$join_link = $main_link";
         }
