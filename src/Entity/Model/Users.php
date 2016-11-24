@@ -8,7 +8,7 @@ class Users implements ModelInterface
 
     use ModelBase;
 
-    protected static $info = array(
+    protected $info = array(
         'entity'         => 'user',
         'table'          => 'users',
         'fieldable'      => true,
@@ -17,7 +17,7 @@ class Users implements ModelInterface
         ),
     );
 
-    protected static $static_relations = array
+    protected $static_relations = array
     (
         'children' => array
         (
@@ -27,6 +27,6 @@ class Users implements ModelInterface
         )
     );
 
-    protected static $dynamic_relations = array();
+    protected $dynamic_relations = array();
 
 }

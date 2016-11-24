@@ -8,7 +8,7 @@ class Taxonomy implements ModelInterface
 
     use ModelBase;
 
-    protected static $info = array(
+    protected $info = array(
         'entity'         => 'taxonomy_term',
         'table'          => 'taxonomy_term_data',
         'fieldable'      => true,
@@ -18,7 +18,7 @@ class Taxonomy implements ModelInterface
         ),
     );
 
-    protected static $static_relations = array
+    protected $static_relations = array
     (
         'parents'   => array
         (
@@ -54,6 +54,6 @@ class Taxonomy implements ModelInterface
         )
     );
     
-    protected static $dynamic_relations = array();
+    protected $dynamic_relations = array();
     
 }

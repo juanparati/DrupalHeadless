@@ -8,7 +8,7 @@ class Node implements ModelInterface
     
     use ModelBase;
 
-    protected static $info = array(
+    protected $info = array(
         'entity'         => 'node',
         'table'          => 'node',
         'fieldable'      => true,
@@ -19,7 +19,7 @@ class Node implements ModelInterface
         ),
     );
 
-    protected static $static_relations = array
+    protected $static_relations = array
     (
         'children' => array
         (
@@ -56,6 +56,6 @@ class Node implements ModelInterface
         )
     );
 
-    protected static $dynamic_relations = array();
+    protected $dynamic_relations = array();
 
 }

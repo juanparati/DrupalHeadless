@@ -25,9 +25,9 @@ trait ModelBase
     {
 
         if ($value)
-            return static::$info = $value;
+            return $this->info = $value;
         else
-            return static::$info;
+            return $this->info;
     }
 
 
@@ -41,9 +41,9 @@ trait ModelBase
     {
 
         if ($value)
-            return static::$static_relations = $value;
+            return $this->static_relations = $value;
         else
-            return static::$static_relations;
+            return $this->static_relations;
     }
 
 
@@ -56,9 +56,9 @@ trait ModelBase
     public function dynamic_relations($value = null)
     {
         if ($value)
-            return static::$dynamic_relations = $value;
+            return $this->dynamic_relations = $value;
         else
-            return static::$dynamic_relations;
+            return $this->dynamic_relations;
     }
 
 
