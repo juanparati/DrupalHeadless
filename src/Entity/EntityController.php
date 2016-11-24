@@ -241,7 +241,7 @@ class EntityController
 
         $this->_build_fieldset_op_conditions($fieldset, $entity_id, $delta);
 
-        return $this;
+        return $this->execute();
     }
 
 
