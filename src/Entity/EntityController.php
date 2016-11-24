@@ -471,15 +471,18 @@ class EntityController
     /**
      * Fetch one record
      *
-     * @param int $type
      * @return mixed
      */
-    public function fetch($type = \PDO::FETCH_OBJ)
+    public function fetch()
     {
         $result = $this->st->execute()->fetch();
 
         if ($result)
+        {
+            $this->_group_result_fields($result);
             $this->_query_multifield_record($result);
+        }
+
 
         return $result;
     }
