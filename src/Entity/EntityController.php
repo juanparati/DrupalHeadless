@@ -478,7 +478,8 @@ class EntityController
     {
         $result = $this->st->execute()->fetch();
 
-        $this->_query_multifield_record($result);
+        if ($result)
+            $this->_query_multifield_record($result);
 
         return $result;
     }
