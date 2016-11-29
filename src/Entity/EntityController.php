@@ -341,6 +341,7 @@ class EntityController
 
     }
 
+
     /**
      * Update a fieldset
      *
@@ -399,7 +400,39 @@ class EntityController
 
 
     /**
+     * Add "Is Null" condition
+     *
+     * @param $property
+     * @param $value
+     * @return $this
+     */
+    public function propertyConditionIsNull($property, $value)
+    {
+        $this->st->isNull('main.' . $property);
+
+        return $this;
+    }
+
+
+    /**
+     * Add "Is Not Null" condition
+     *
+     * @param $property
+     * @param $value
+     * @return $this
+     */
+    public function propertyConditionIsNotNull($property, $value)
+    {
+        $this->st->isNotNull('main.' . $property);
+
+        return $this;
+    }
+
+
+
+    /**
      * Add a query condition for linked field
+     *
      * @param $fieldset
      * @param $column
      * @param $value
@@ -414,6 +447,42 @@ class EntityController
 
         if ($column_name !== false)
             $this->st->condition($fieldset . '.' . $column_name, $value, $condition);
+
+        return $this;
+    }
+
+
+    /**
+     * Add a "Is Null" condition for linked field
+     *
+     * @param $fieldset
+     * @param $column
+     * @return $this
+     */
+    public function fieldConditionIsNull($fieldset, $column)
+    {
+
+        $column_name = empty($this->relations[$fieldset]['fields'][$column]) ? false : $this->relations[$fieldset]['fields'][$column];
+
+        if ($column_name !== false)
+            $this->st->isNull($fieldset . '.' . $column_name);
+
+        return $this;
+    }
+
+
+    /**
+     * Add a "Is Not Null" condition for linked field
+     * @param $fieldset
+     * @param $column
+     * @return $this
+     */
+    public function fieldConditionIsNotNull($fieldset, $column)
+    {
+        $column_name = empty($this->relations[$fieldset]['fields'][$column]) ? false : $this->relations[$fieldset]['fields'][$column];
+
+        if ($column_name !== false)
+            $this->st->isNotNull($fieldset . '.' . $column_name);
 
         return $this;
     }
