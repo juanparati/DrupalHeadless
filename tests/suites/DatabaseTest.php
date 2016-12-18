@@ -41,10 +41,9 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
 
         Database::addConnectionInfo('default', 'default', array(
             'driver'    => 'mysql',
-            // 'database'  => 'travis_ci_drupal',
-            'database'  => 'drupal',
+            'database'  => 'travis_ci_drupal',
             'username'  => 'root',
-            'password'  => 'root',
+            'password'  => '',
             'host'      => '127.0.0.1',
             'prefix'    => 'drupal_'
         ));
