@@ -1,9 +1,10 @@
 <?php
 
 use DrupalHeadless\Database\Database;
+use DrupalHeadless\Entity\EntityController as EC;
 
 
-class DatabaseTest extends PHPUnit_Framework_TestCase
+class EntityTest extends PHPUnit_Framework_TestCase
 {
 
     /**
@@ -44,7 +45,7 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
             // 'database'  => 'travis_ci_drupal',
             'database'  => 'drupal',
             'username'  => 'root',
-            'password'  => 'root',
+            'password'  => '',
             'host'      => '127.0.0.1',
             'prefix'    => 'drupal_'
         ));
@@ -74,8 +75,13 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
      * @return \DrupalHeadless\Database\DatabaseStatementInterface|int
      * @throws Exception
      */
-    public function testInsert()
+    /*
+    public function testInsertNode()
     {
+
+        $ne = EC::entity($this->db, new DrupalHeadless\Entity\Model\Node(), 'article')->load();
+
+        $ne->
 
         $last_id = $this->db->insert('node')->fields($this->data['testInsert'])->execute();
 
@@ -85,32 +91,28 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
         return $last_id;
 
     }
+    */
 
 
     /**
      * Test single select
      *
-     * @param   int     $last_id    Last inserted ID
-     * @depends testInsert
      * @return int
      */
-    public function testSingleSelect($last_id)
+    public function testSingleSelect()
     {
-        $result =  $this->db->select('node', 'n')
-            ->fields('n')
-            ->condition('nid', $last_id)
-            ->execute()
-            ->fetch(PDO::FETCH_ASSOC);
 
-        $this->assertArraySubset($this->data['testInsert'], $result, false, 'Inserted data do not match');
+        $ne = EC::entity($this->db, new DrupalHeadless\Entity\Model\Node(), 'article')->load();
+        $fields = $ne->select()->fetchAll();
 
-        return $last_id;
+        $this->assertArraySubset($this->data['testInsert'], $fields, false, 'Inserted data do not match');
     }
 
 
     /**
      * Test single condition delete
      */
+    /*
     public function testSingleDelete()
     {
         $affected = $this->db->delete('node')->condition('title', $this->data['testInsert']['title'])->execute();
@@ -128,6 +130,7 @@ class DatabaseTest extends PHPUnit_Framework_TestCase
 
         $this->assertGreaterThan(1, $result);
     }
+    */
 
 
 
